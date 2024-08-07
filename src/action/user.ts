@@ -1,11 +1,12 @@
 "use server";
 
 import connectDB from "@/lib/mongodb";
-import { User } from "@/models/User";
+import { IUser, User } from "@/models/User";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
 import { signIn } from "@/auth";
+import { cache } from "react";
 
 
 const login = async (formData: FormData) =>{
@@ -53,10 +54,12 @@ const register = async (formData: FormData)=>{
     redirect("/login")
 }
 
-const fetchAllUsers = async () =>{
+const fetchAllUsers = cache(async () =>{
     await connectDB();
     const users = await User.find({});
     return users
-}
+})
+
+
 
 export {register, login, fetchAllUsers}

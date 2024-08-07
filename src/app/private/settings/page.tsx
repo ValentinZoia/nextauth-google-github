@@ -1,15 +1,29 @@
+
 import { fetchAllUsers } from '@/action/user';
-import { getSession } from '@/lib/getSession';
+// import { getSession } from '@/lib/getSession';
 import { User } from '@/models/User';
-import { redirect } from 'next/navigation';
-import React from 'react'
+import { useSession } from 'next-auth/react';
+import { redirect, useRouter } from 'next/navigation';
+import React, { useEffect } from 'react'
 
 const SettingsPage = async() => {
-  const session = await getSession();
-  const user  = session?.user;
-  if(!user) return redirect('/login')
+  // const session = await getSession();
+  // const user  = session?.user;
+  // if(!user) return redirect('/login')
 
-  if(user?.role !== 'admin') return redirect('/private/dashboard');
+  // if(user?.role !== 'admin') return redirect('/private/dashboard');
+
+
+  const { data: session } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (!session?.user) {
+      router.push('/login');
+    }
+    if(session?.user?.role !== 'admin'){
+      router.push('/private/dashboard');
+    }
+  }, [session, router]);
 
   const allUsers = await fetchAllUsers();
   return (

@@ -1,16 +1,25 @@
-
+'use client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import { getSession } from '@/lib/getSession'
-import { redirect } from 'next/navigation'
+// import { getSession } from '@/lib/getSession'
+import { useSession } from 'next-auth/react'
+import { redirect, useRouter } from 'next/navigation'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
-const Dashboard =async  () => {
+const Dashboard =() => {
 
-  const session = await getSession();
-  const user  = session?.user;
-  if(!user) return redirect('/login')
+  const { data: session } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (!session?.user) {
+      router.push('/login');
+    }
+  }, [session, router]);
+
+  // const session = await getSession();
+  // const user  = session?.user;
+  // if(!user) return redirect('/login')
 
   return (
     <div className="flex min-h-screen">

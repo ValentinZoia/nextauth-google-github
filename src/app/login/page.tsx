@@ -1,20 +1,29 @@
-import React from "react";
+
+import React, { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { login } from "@/action/user";
-import {signIn } from "@/auth";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/getSession";
+// import {signIn } from "@/auth";
+import { redirect, useRouter } from "next/navigation";
+// import { getSession } from "@/lib/getSession";
+import { useSession, signIn } from "next-auth/react";
 
-const LoginPage = async () => {
-  const session = await getSession();
-  const user  = session?.user;
-  if(user){
-    redirect('/private/dashboard')
-  }
+const LoginPage =  async() => {
+  // const session = await getSession();
+  // const user  = session?.user;
+  // if(user){
+  //   redirect('/private/dashboard')
+  // }
   
+  // const { data: session } = useSession();
+  // const router = useRouter();
+  // useEffect(() => {
+  //   if (session?.user) {
+  //     router.push('/private/dashboard');
+  //   }
+  // }, [session, router]);
   
 
 
@@ -43,20 +52,18 @@ const LoginPage = async () => {
         </button>
         <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-blue-500">
-            Register
+          <Link href="/signup" className="text-blue-500">
+            Sign up
           </Link>
         </p>
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
       </form>
       <section className="flex flex-col space-y-4">
-        <form action={async () =>{
-          'use server'
-          await signIn("github")
-        }}>
+        <form action = {async() =>{'use server'; await signIn("github")}}>
           <button
             className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="submit"
+            // onClick={() => signIn("github")}
           >
             <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span className="text-neutral-700 dark:text-neutral-300 text-sm">
@@ -64,13 +71,11 @@ const LoginPage = async () => {
             </span>
           </button>
         </form>
-        <form action={async () =>{
-          'use server'
-          await signIn("google")
-        }}>
+        <form action = {async() =>{'use server'; await signIn("google")}}>
           <button
             className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="submit"
+            // onClick={() => signIn("google")} 
           >
             <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span className="text-neutral-700 dark:text-neutral-300 text-sm">

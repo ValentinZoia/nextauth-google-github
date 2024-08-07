@@ -1,12 +1,15 @@
+'use client'
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
-import { getSession } from "@/lib/getSession";
-import { signOut } from "@/auth";
+// import { getSession } from "@/lib/getSession";
+// import { signOut } from "@/auth";
+import { useSession, signOut } from "next-auth/react";
 
-const NavBar = async () => {
-  const session = await getSession();
+const NavBar =  () => {
+  const { data: session } = useSession();
   const user = session?.user ?? null;
+  
 
   return (
     <nav className="flex justify-around items-center py-4 bg-[#141414] text-white">
@@ -25,11 +28,12 @@ const NavBar = async () => {
             </li>
             <li className="flex items-center gap-2">
               <p className="text-gray-400 cursor-pointer">{user.email}</p>
-              <img src={user.image as string} alt="" className="w-10 h-10 rounded-full cursor-pointer" />
+              {user.image && <img src={user.image as string} alt="" className="w-10 h-10 rounded-full cursor-pointer" />}
+              
             </li>
-            <form action={async () => {
-              'use server'
-              await signOut()
+            <form action={ () => {
+              
+               signOut()
             }}>
               <Button type="submit" variant={"ghost"}>
                 Logout
@@ -45,7 +49,7 @@ const NavBar = async () => {
               </Link>
             </li>
             <li>
-              <Link href="/register" className="hover:text-gray-400">
+              <Link href="/signup" className="hover:text-gray-400">
                 Signup
               </Link>
             </li>
