@@ -1,4 +1,4 @@
-import NextAuth, { CredentialsSignin } from "next-auth"
+import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials";
 import github from "next-auth/providers/github";
 import google from "next-auth/providers/google";
@@ -10,13 +10,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
 
     github({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
+      clientId: process.env.AUTH_GITHUB_ID as string ,
+      clientSecret: process.env.AUTH_GITHUB_SECRET as string,
     }),
 
     google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      clientId: process.env.AUTH_GOOGLE_ID as string,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
     }),
 
     Credentials({
@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           type: "password",
         },
       },
-      async authorize (credentials): Promise<IUser | null> {
+      async authorize (credentials) {
         const { email, password } = credentials as {
           email: string | undefined;
           password: string | undefined;
@@ -39,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 
         if(!email  || !password){
-          throw new CredentialsSignin("Please provide both email and password");
+          throw new Error("Please provide both email and password");
         }
 
 
@@ -51,23 +51,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 
         if (!user) {
-          throw new CredentialsSignin("Invalid email or password");
+          throw new Error("Invalid email or password");
           
         }
 
 
         if(!user.password){
-          throw new CredentialsSignin("Invalid email or password");
+          throw new Error("Invalid email or password");
         }
 
         const isMatched: boolean = await bcrypt.compare(password, user.password)
 
         if (!isMatched) {
-          throw new CredentialsSignin("Passwor did not match");
+          throw new Error("Passwor did not match");
         }
 
        const userData = {
-         _id: user._id,
+         id: user._id,
          firstName: user.firstName,
          lastName: user.lastName,
          email: user.email,
